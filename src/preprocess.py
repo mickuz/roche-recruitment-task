@@ -1,12 +1,16 @@
 import pandas as pd
-import numpy as np
 
-def execute(input_file, output_file):
-    data = pd.read_csv(input_file, sep = ";")
+
+def clean_data(input_file, output_file):
+    """Removes unnecessary features and null values from the data.
+
+    Args:
+        input_file (str): input file in the .csv format.
+        output_file (str): output file in the .csv format.
+    """
+    data = pd.read_csv(input_file, sep=";")
     data = data.dropna()
-    del(data["Name"])
-    del(data["Ticket"])
-    del(data["Cabin"])
-    
+    data = data.drop(["Name", "Ticket", "Cabin"], axis=1)
 
-    data.to_csv(output_file)
+    data.to_csv(output_file, sep=";", index=False)
+

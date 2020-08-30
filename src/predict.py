@@ -1,25 +1,24 @@
 import pandas as pd
 import pickle as pkl
 
-df = pd.read_csv("data/val_bf.csv")
+from preprocess import clean_data
+from build_features import extract_features
 
-df.dropna(inplace = True)
 
-target = df["Survived"]
-del(df["Survived"])
-    
-model_unpickle = open("data/model.pkl", 'rb')
-model = pkl.load(model_unpickle)
-model.close()
+extract_features("../data/val.csv", "../data/val_bf.csv")
+clean_data("../data/val_bf.csv", "../data/val_bf.csv")
+
+df = pd.read_csv("../data/val_bf.csv", sep=";")
+
+df.dropna(inplace=True)
+
+target = df["Survived"].values
+df = df.drop(["Survived"], axis=1)
+
+with open("../data/model.pkl", "rb") as model_unpickle:
+    model = pkl.load(model_unpickle)
 
 predictions = model.predict(df)
-# Reassign target (if it was present) and predictions.
-df["prediction"] = predictions
-df["target"] = target
 
-ok = 0
-for i in df.iterrows():
-    if (i[1]["target"] == i[1]["prediction"]):
-        ok = ok + 1
-
-print("accuracy is", ok / df.shape[0])
+accuracy = (predictions == target).mean()
+print("accuracy is", accuracy)

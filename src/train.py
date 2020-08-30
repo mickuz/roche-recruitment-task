@@ -1,38 +1,30 @@
-import numpy as np
 import pandas as pd
-import sklearn
 import pickle as pkl
 
-    # Split the data for training.
-df = pd.read_csv("data/train_bf.csv")
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+from preprocess import clean_data
+from build_features import extract_features
+
+
+extract_features("../data/train.csv", "../data/train_bf.csv")
+clean_data("../data/train_bf.csv", "../data/train_bf.csv")
+
+df = pd.read_csv("../data/train_bf.csv", sep=";")
 
 y = df["Survived"]
+X = df.drop("Survived", axis=1)
 
-tr_col = []
-for c in df.columns:
-    if c == "Survived":
-        pass
-    else:
-        tr_col.append(c)
-
-# Create a classifier and select scoring methods.
-from sklearn.ensemble import RandomForestClassifier
 clf = RandomForestClassifier(n_estimators=10)
 
-
-# Fit full model and predict on both train and test.
-clf.fit(df[tr_col], y)
-preds = clf.predict(df[tr_col])
+clf.fit(X, y)
+predictions = clf.predict(X)
 metric_name = "train_accuracy"
-metric_result = sklearn.metrics.accuracy_score(y, preds)
+metric_result = accuracy_score(y, predictions)
 
-model_pickle = open("data/model.pkl", 'wb')
-pkl.dump(clf, model_pickle)
-model_pickle.close()
+with open("../data/model.pkl", "wb") as model_pickle:
+    pkl.dump(clf, model_pickle)
 
-# Return metrics and model.
-info = ""
-info = info + metric_name
-info = info + " for the model is "
-info = info + str(metric_result)
+info = "{} for the model is {}".format(metric_name, str(metric_result))
 print(info)
