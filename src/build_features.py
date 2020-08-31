@@ -1,22 +1,29 @@
 import pandas as pd
 
 
-def extract_features(input_file, output_file, force_write=True):
-    """Prepares the data for modeling by building new features and transforming the existing ones.
-
-    Args:
-        input_file (str): input file in the .csv format.
-        output_file (str): output file in the .csv format.
-        force_write (boolean): should the resulting dataframe be saved to the output file?
-    """
-    df = pd.read_csv(input_file, sep=";")
-
+def convert_features(df):
     df["Sex"] = df["Sex"].map({"male": 0, "female": 1}).astype(int)
-    df["Embarked"] = df["Embarked"].map({"S": 1, "C": 2, "Q": 3, float("nan"): 4}).astype(int)
 
+    bin_labels = ["Young", "Medium", "Old"]
+    df["Age"] = pd.qcut(df["Age"], q=3, labels=bin_labels)
+
+    return df
+
+
+def encode_features(df, columns=[]):
+    for column in columns:
+        encoded_column = pd.get_dummies(df[column], drop_first=True)
+        df = pd.concat([df, encoded_column], axis=1)
+        df = df.drop(column, axis=1)
+
+    return df
+
+
+def add_new_features(df):
     df["FamilySize"] = df["SibSp"] + df["Parch"] + 1
     df["IsAlone"] = 0
     df.loc[df["FamilySize"] == 1, "IsAlone"] = 1
 
-    if force_write:
-        df.to_csv(output_file, sep=";", index=False)
+    df = df.drop(["SibSp", "Parch", "FamilySize"], axis=1)
+
+    return df
