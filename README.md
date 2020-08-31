@@ -1,52 +1,44 @@
-# Titanic - data science project 
+# Titanic - data science recruitment task project
 
-## INTRODUCTION
-This is simple data science project designed to predict whether a given person would survive the Titanic crash.
+The goal of this repository is to provide an example of a machine learning project going through fundamental steps such as: data exploration and analysis, feature engineering, building a prediction model, tuning hyperparameters and making predictions. [Titanic dataset](https://www.kaggle.com/c/titanic) was used for this project:
 
-It is not a ready-made project, but a starting point for You. It has been written without respecting good practices.
+>The sinking of the Titanic is one of the most infamous shipwrecks in history.
 
-We have come up with 9 tasks for you related to this project. Try to do them all in best possible way. Do not quit if you fail to complete all tasks. We would like to see your project, even if it is only partially ready.
+>On April 15, 1912, during her maiden voyage, the widely considered “unsinkable” RMS Titanic sank after colliding with an iceberg. Unfortunately, there weren’t enough lifeboats for everyone onboard, resulting in the death of 1502 out of 2224 passengers and crew.
 
-Project is written in python, as it is the most usefull to work with us. However, if you are ninja in other language, and want to show off your skills, you can rewrite the code to other language.
+>While there was some element of luck involved in surviving, it seems some groups of people were more likely to survive than others.
 
-## TASKS
-Below you will find 9 tasks. Start from the first one. Further tasks can be done in any order you like and it is fine if you skip some of them.
+>In this challenge, we ask you to build a predictive model that answers the question: “what sorts of people were more likely to survive?” using passenger data (ie name, age, gender, socio-economic class, etc).
 
-### TASK1 - organizational instructions
- Create your own repository on Github or other public code versioning server. Use content of this project to create initial commit.
- 
- Follow the rules:
-* The solutions to all subsequnt tasks should be in your repository.
-* Each task should be solved in separate branch using any number of commits. You can edit the code or add additional file explaining your way of thinking. The branch name should be related to the task, so we can know which branch applies to which task.
-* All branches should finally be merged to master branch.
-* At the end remember to share your repository with us.
+## Installation:
 
-### TASK2 - sense of humour
-Add a file with your favourite joke to the docs directory.
+To run this project:
+1. Clone the repository into your machine: `git clone https://github.com/mickuz/roche-recruitment-task.git`
+2. Build an image from a Dockerfile: `docker build -t <image-name> .`
+3. Run a container from an image interactively: `docker run -it <image-name>`
+4. Execute the command `python3 train.py` to train the model
+5. Execute the command `python3 predict.py` to make predictions and display the final performance of the model
 
-### TASK3 - good practices
-* Correct the code so it is easy to read, run and reuse.
-* Remember about
-  * README.md files
-  * Code comments
-  * quality and performance of code -- remove or fix badly written code
+## Table of Contents
 
-### TASK4 - feature engineering
-Propose better solution for feature engineering than the one given by us.
+**Data analysis:**
+* Descriptive Analysis
+* Visualizations
+* Finding correlations between features
 
-### TASK5 - models
-Propose other prediction models than the one proposed by us. 
+**Feature engineering:**
+* Handling missing data
+* Converting features from categorical to numerical
+* One-hot encoding
 
-### TASK6 - measures
-After completing TASK5, justify why you have chosen this particular model. Compare it with the model proposed by us or with any other model choosen by you. If you haven't completed TASK5, write theoretically how can you compare two solutions.
+**Predictive modeling:**
+* Gaussian Naive Bayes
+* Logistic Regression
+* K-Nearest Neighbors
+* Support Vector Machines
+* Decision Tree
+* Random Forest
 
-### TASK7 - docker
-Prepare a Dockerfile that will allow us to run your code in the container.
-
-### TASK8 - tests
-Write unit tests covering your code.
-
-### TASK9 - prediction api
-Prepare a code that will share your model via API. It should be accessible by the HTTP protocol and accept and return data in JSON format
-
-## GOOD LUCK!!!
+**Evaluation of the model:**
+* K-folds cross validation
+* Accuracy and F1 scores
