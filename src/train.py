@@ -2,29 +2,39 @@ import pandas as pd
 import pickle as pkl
 
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
 
-from preprocess import clean_data
-from build_features import extract_features
+from sklearn.model_selection import KFold, cross_validate
+
+from preprocess import impute_missing_values
+from build_features import convert_features, encode_features, add_new_features
 
 
-extract_features("../data/train.csv", "../data/train_bf.csv")
-clean_data("../data/train_bf.csv", "../data/train_bf.csv")
+df = pd.read_csv("../data/train.csv", sep=";")
+df = df.drop(["PassengerId", "Name", "Ticket", "Fare", "Cabin"], axis=1)
 
-df = pd.read_csv("../data/train_bf.csv", sep=";")
+df = impute_missing_values(df, cat_columns=["Embarked"], num_columns=["Age"])
+df = convert_features(df)
+df = encode_features(df, columns=["Pclass", "Age", "Embarked"])
+df = add_new_features(df)
 
+X = df.drop(["Survived"], axis=1)
 y = df["Survived"]
-X = df.drop("Survived", axis=1)
 
-clf = RandomForestClassifier(n_estimators=10)
+clf = RandomForestClassifier(max_depth=5,
+                             min_samples_leaf=5,
+                             min_samples_split=12,
+                             n_estimators=10)
 
 clf.fit(X, y)
-predictions = clf.predict(X)
-metric_name = "train_accuracy"
-metric_result = accuracy_score(y, predictions)
+
+kfold = KFold(n_splits=10, shuffle=True)
+scoring = {"accuracy": "accuracy",
+           "f1": "f1_macro"}
+scores = cross_validate(clf, X, y, cv=kfold, scoring=scoring)
+scores = {key: score.mean() for key, score in scores.items()}
+
+print("Accuracy: {}".format(str(scores["test_accuracy"] * 100)))
+print("F1 score: {}".format(str(scores["test_f1"] * 100)))
 
 with open("../data/model.pkl", "wb") as model_pickle:
     pkl.dump(clf, model_pickle)
-
-info = "{} for the model is {}".format(metric_name, str(metric_result))
-print(info)
